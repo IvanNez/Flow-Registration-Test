@@ -9,4 +9,14 @@ import Foundation
 
 class LoginOrRegistrationViewModel {
     
+    var getCode: ((String) -> Void)?
+    var loginOrRegistrationClosure: Bool
+    
+    init(loginOrRegistrationClosure: Bool) {
+        self.loginOrRegistrationClosure = loginOrRegistrationClosure
+    }
+    
+    func getCodeButtonTapped(number: String) {
+        getCode?(number)
+    }
 }

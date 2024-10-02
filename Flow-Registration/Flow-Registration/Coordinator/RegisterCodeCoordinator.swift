@@ -1,22 +1,18 @@
 //
-//  LoginByPhoneCoordinator.swift
+//  RegisterCodeCoordinator.swift
 //  Flow-Registration
 //
 //  Created by Иван Незговоров on 02.10.2024.
 //
 
-import UIKit
 
-class LoginByPhoneCoordinator: BaseCoordinator {
+class RegisterCodeCoordinator: BaseCoordinator {
     override func start() {
-        let loginByPhoneVC = FirstLoginView()
-//        loginByPhoneVC.onGetCode = { [weak self] in
-//            self?.showEnterCodeScreen(isForLogin: true)
+      //  let registerVC = LoginOrRegistrationView()
+//        registerVC.onGetCode = { [weak self] in
+//            self?.showEnterCodeScreen(isForLogin: false)
 //        }
-//        loginByPhoneVC.onRegister = { [weak self] in
-//            self?.showRegisterScreen()
-//        }
-        navigationController.pushViewController(loginByPhoneVC, animated: true)
+     //   navigationController.pushViewController(registerVC, animated: true)
     }
     
     private func showEnterCodeScreen(isForLogin: Bool) {
@@ -27,10 +23,5 @@ class LoginByPhoneCoordinator: BaseCoordinator {
 //            self.navigationController.present(alert, animated: true)
 //        }
         navigationController.pushViewController(enterCodeVC, animated: true)
-    }
-    
-    private func showRegisterScreen() {
-        let registerCoordinator = RegisterCoordinator(navigationController: navigationController)
-        registerCoordinator.start()
     }
 }

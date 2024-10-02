@@ -16,20 +16,12 @@ class AppCoordinator: BaseCoordinator {
     }
     
     override func start() {
-        if hasCode {
-            showLoginByCodeScreen()
-        } else {
-            showLoginByPhoneScreen()
-        }
+        showLoginScreen()
     }
     
-    private func showLoginByPhoneScreen() {
-        let loginCoordinator = LoginByPhoneCoordinator(navigationController: navigationController)
-        loginCoordinator.start()
-    }
-    
-    private func showLoginByCodeScreen() {
-        let loginCoordinator = LoginByCodeCoordinator(navigationController: navigationController)
+    private func showLoginScreen() {
+        let loginCoordinator = LoginByPhoneOrCodeCoordinator(navigationController: navigationController, hasCode: hasCode)
+        addChildCoordinator(loginCoordinator)
         loginCoordinator.start()
     }
 }

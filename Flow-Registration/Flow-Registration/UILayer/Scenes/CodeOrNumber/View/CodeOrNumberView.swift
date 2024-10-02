@@ -100,6 +100,7 @@ class CodeOrNumberView: UIViewController {
 private extension CodeOrNumberView {
     func setup() {
         view.backgroundColor = .black
+        navigationController?.navigationBar.tintColor = .white
         setupComponents()
         setupChange()
     }

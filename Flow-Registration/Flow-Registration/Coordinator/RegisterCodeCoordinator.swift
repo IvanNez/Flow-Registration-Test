@@ -15,13 +15,13 @@ class RegisterCodeCoordinator: BaseCoordinator {
      //   navigationController.pushViewController(registerVC, animated: true)
     }
     
-    private func showEnterCodeScreen(isForLogin: Bool) {
-        let enterCodeVC = EnterCodeView()
+//    private func showEnterCodeScreen(isForLogin: Bool) {
+//        let enterCodeVC = EnterCodeView()
 //        enterCodeVC.onSubmitCode = {
 //            let alert = UIAlertController(title: "Готово", message: nil, preferredStyle: .alert)
 //            alert.addAction(UIAlertAction(title: "OK", style: .default, handler: nil))
 //            self.navigationController.present(alert, animated: true)
 //        }
-        navigationController.pushViewController(enterCodeVC, animated: true)
-    }
+ //       navigationController.pushViewController(enterCodeVC, animated: true)
+ //   }
 }

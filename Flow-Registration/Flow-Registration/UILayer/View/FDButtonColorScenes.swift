@@ -14,7 +14,15 @@ enum FDButtonColorScenes {
 
 class FDButton: UIView {
     
-    private let button = UIButton()
+    private lazy var  button: UIButton = {
+        let button = UIButton()
+        button.translatesAutoresizingMaskIntoConstraints = false
+        button.titleLabel?.font = UIFont.systemFont(ofSize: 16)
+        button.layer.cornerRadius = 24
+        button.clipsToBounds = true // Чтобы градиент и углы обрезались
+        button.addTarget(self, action: #selector(buttonPressed), for: .touchUpInside)
+        return button
+    }()
     private var gradientLayer: CAGradientLayer?
     var action: (() -> Void)?
     var scheme: FDButtonColorScenes = .gradient {
@@ -47,11 +55,7 @@ class FDButton: UIView {
     
     private func setupButton() {
         self.addSubview(button)
-        button.translatesAutoresizingMaskIntoConstraints = false
-        button.titleLabel?.font = UIFont.systemFont(ofSize: 16)
-        button.layer.cornerRadius = 24
-        button.clipsToBounds = true // Чтобы градиент и углы обрезались
-        button.addTarget(self, action: #selector(buttonPressed), for: .touchUpInside)
+     
         
         NSLayoutConstraint.activate([
             button.bottomAnchor.constraint(equalTo: self.bottomAnchor),
@@ -114,9 +118,4 @@ class FDButton: UIView {
     @objc private func buttonPressed() {
         action?()
     }
-}
-
-// Превью для SwiftUI Canvas
-#Preview {
-    FDButton(scheme: .gradient)
 }

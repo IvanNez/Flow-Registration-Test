@@ -6,17 +6,22 @@
 //
 
 import Foundation
+import Combine
 
 class LoginOrRegistrationViewModel {
     
     var getCode: ((String) -> Void)?
-    var loginOrRegistrationClosure: Bool
+    var loginOrRegistration: Bool
+    var isLoadingSubject = PassthroughSubject<Bool, Never>()
     
     init(loginOrRegistrationClosure: Bool) {
-        self.loginOrRegistrationClosure = loginOrRegistrationClosure
+        self.loginOrRegistration = loginOrRegistrationClosure
     }
     
     func getCodeButtonTapped(number: String) {
-        getCode?(number)
+        NetworkManager.shared.requestCode(for: number) { [weak self] code in
+            self?.isLoadingSubject.send(false)
+            self?.getCode?(code)
+        }
     }
 }

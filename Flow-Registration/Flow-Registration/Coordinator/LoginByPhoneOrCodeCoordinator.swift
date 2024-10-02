@@ -33,8 +33,9 @@ class LoginByPhoneOrCodeCoordinator: BaseCoordinator {
         navigationController.pushViewController(loginByPhoneVC, animated: true)
     }
     
-    private func showEnterCodeScreen(isForLogin: Bool) {
-        let enterCodeVC = EnterCodeView()
+    private func showEnterCodeScreen(isForLogin: Bool, code: String) {
+        let viewModel = EnterCodeViewModel(loginOrRegistrationClosure: isForLogin, code: code)
+        let enterCodeVC = EnterCodeView(viewModel: viewModel)
         //        enterCodeVC.onSubmitCode = {
         //            let alert = UIAlertController(title: "Готово", message: nil, preferredStyle: .alert)
         //            alert.addAction(UIAlertAction(title: "OK", style: .default, handler: nil))

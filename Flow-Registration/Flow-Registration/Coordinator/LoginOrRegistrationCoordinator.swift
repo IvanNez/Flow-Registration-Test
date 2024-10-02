@@ -16,8 +16,17 @@ class LoginOrRegistrationCoordinator: BaseCoordinator {
     }
     
     override func start() {
-        let viewModel = LoginOrRegistrationViewModel()
+        let viewModel = LoginOrRegistrationViewModel(loginOrRegistrationClosure: isRegister)
         let view = LoginOrRegistrationView(viewModel: viewModel)
+        viewModel.getCode = { [weak self] code in
+            self?.setCodeScreen(code)
+        }
+        navigationController.pushViewController(view, animated: true)
+    }
+    
+    private func setCodeScreen(_ code: String) {
+        let viewModel = EnterCodeViewModel(loginOrRegistrationClosure: isRegister, code: code)
+        let view = EnterCodeView(viewModel: viewModel)
         navigationController.pushViewController(view, animated: true)
     }
 }

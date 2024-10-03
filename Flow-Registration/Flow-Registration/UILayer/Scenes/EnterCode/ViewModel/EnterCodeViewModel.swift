@@ -8,8 +8,10 @@
 import Foundation
 
 class EnterCodeViewModel {
+    
     var code: String
-    var inputCode: String?
+    var inputCode: String = ""
+    
     var loginOrRegistration: Bool
     
     init(loginOrRegistrationClosure: Bool, code: String) {
@@ -17,7 +19,15 @@ class EnterCodeViewModel {
         self.code = code
     }
     
-//    func getCodeButtonTapped(number: String) {
-//        getCode?(number)
-//    }
+    func setCode(code: String) {
+        if !code.isEmpty {
+               inputCode.append(code)
+           } else {
+               // Если код пустой, значит символ удалён, удаляем последний символ из inputCode
+               if !inputCode.isEmpty {
+                   inputCode.removeLast()
+               }
+           }
+        print(inputCode)
+    }
 }

@@ -57,7 +57,7 @@ class LoginOrRegistrationView: UIViewController {
         lbl.translatesAutoresizingMaskIntoConstraints = false
         return lbl
     }()
-    private lazy var tfNumber = FDViewGradient(frame: .zero, leftPadding: 34, cornerRadius: 10)
+    private lazy var tfNumber = FDViewGradient(frame: .zero, leftPadding: 34, cornerRadius: 10, isCode: false)
     private lazy var secondVStackView: UIStackView = {
         let stackView = UIStackView()
         stackView.axis = .vertical
@@ -109,7 +109,6 @@ private extension  LoginOrRegistrationView {
         mainStackView.addArrangedSubview(secondVStackView)
         mainStackView.addArrangedSubview(getCodeButton)
         
-        
         tfNumber.translatesAutoresizingMaskIntoConstraints = false
         
         NSLayoutConstraint.activate([
@@ -117,14 +116,14 @@ private extension  LoginOrRegistrationView {
             mainStackView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 35),
             mainStackView.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -35),
             
-            
             tfNumber.heightAnchor.constraint(equalToConstant: 50)
         ])
     }
     
     func setupButtonAndActivityIndicator() {
         view.addSubview(activityIndicator)
-        getCodeButton.translatesAutoresizingMaskIntoConstraints = false
+        
+        getCodeButton.setTitle(viewModel.loginOrRegistration ? "Регистрация": "Войти")
         
         NSLayoutConstraint.activate([
             activityIndicator.centerXAnchor.constraint(equalTo: view.centerXAnchor),

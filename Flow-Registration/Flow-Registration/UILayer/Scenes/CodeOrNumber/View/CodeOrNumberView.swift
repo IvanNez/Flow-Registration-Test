@@ -102,7 +102,7 @@ private extension CodeOrNumberView {
         view.backgroundColor = .black
         navigationController?.navigationBar.tintColor = .white
         setupComponents()
-        setupChange()
+        setupButton()
     }
     func setupComponents() {
         view.addSubview(vStackMain)
@@ -126,7 +126,8 @@ private extension CodeOrNumberView {
         ])
     }
     
-    func setupChange() {
+    func setupButton() {
+        loginButton.translatesAutoresizingMaskIntoConstraints = false
         loginButton.setTitle(viewModel.loadCodeOrPhone ? "Войти по код приложению": "Войти по номер телефона")
         loginButton.action = { [weak self] in
             self?.viewModel.loginButtonTapped()

@@ -10,8 +10,12 @@ import UIKit
 
 class FDViewGradient: UIView {
     
-    private let tf = UITextField()
+    let tf = UITextField()
     private var gradientLayer: CAGradientLayer?
+    var nextTextField: UITextField?
+    var previousTextField: UITextField?
+    var isCode: Bool
+    var textClosure: ((String) -> Void)?
     var text: String? {
         get {
             return tf.text
@@ -21,7 +25,8 @@ class FDViewGradient: UIView {
         }
     }
     
-    init(frame: CGRect, leftPadding: CGFloat? = nil, cornerRadius: CGFloat = 10.0) {
+    init(frame: CGRect, leftPadding: CGFloat? = nil, cornerRadius: CGFloat = 10.0, isCode: Bool) {
+        self.isCode = isCode
         super.init(frame: frame)
         setupLayout(leftPadding: leftPadding)
         setupGradientBorder(cornerRadius: cornerRadius)
@@ -31,31 +36,19 @@ class FDViewGradient: UIView {
         fatalError("init(coder:) has not been implemented")
     }
     
-    private func setupLayout(leftPadding: CGFloat?) {
-        tf.translatesAutoresizingMaskIntoConstraints = false
-        tf.backgroundColor = UIColor.clear
-        tf.borderStyle = .none
-        tf.textColor = .white
-        tf.font = UIFont.systemFont(ofSize: 16) // test
-        addSubview(tf)
-        
-        print(leftPadding)
-        if let padding = leftPadding {
-            NSLayoutConstraint.activate([
-                tf.leadingAnchor.constraint(equalTo: self.leadingAnchor, constant: padding),
-                tf.trailingAnchor.constraint(equalTo: self.trailingAnchor, constant: -16),
-                tf.topAnchor.constraint(equalTo: self.topAnchor),
-                tf.bottomAnchor.constraint(equalTo: self.bottomAnchor)
-            ])
-        } else {
-            NSLayoutConstraint.activate([
-                tf.centerXAnchor.constraint(equalTo: self.centerXAnchor),
-                tf.centerYAnchor.constraint(equalTo: self.centerYAnchor)
-            ])
+    
+    override func layoutSubviews() {
+        super.layoutSubviews()
+        gradientLayer?.frame = bounds
+        if let borderLayer = gradientLayer?.mask as? CAShapeLayer {
+            borderLayer.path = UIBezierPath(roundedRect: bounds, cornerRadius: layer.cornerRadius).cgPath
         }
     }
-    
-    private func setupGradientBorder(cornerRadius: CGFloat) {
+}
+
+// MARK: -- Setup layer
+private extension FDViewGradient {
+    func setupGradientBorder(cornerRadius: CGFloat) {
         
         gradientLayer = CAGradientLayer()
         gradientLayer?.colors = [
@@ -65,21 +58,100 @@ class FDViewGradient: UIView {
             UIColor(hexString: "#45B5E9")!.cgColor,
             UIColor(hexString: "#10D7E2")!.cgColor
         ]
-        gradientLayer?.startPoint = CGPoint(x: 0.5, y: 0) // верх
-               gradientLayer?.endPoint = CGPoint(x: 0.5, y: 1) // низ
-               gradientLayer?.frame = bounds
-               
-               // Обеспечиваем добавление градиентного слоя в качестве бордера
-               layer.insertSublayer(gradientLayer!, at: 0) // добавляем градиент в слой
-               layer.cornerRadius = cornerRadius // радиус углов устанавливаем через параметр
-               layer.masksToBounds = true 
+        gradientLayer?.startPoint = CGPoint(x: 0.5, y: 0)
+        gradientLayer?.endPoint = CGPoint(x: 0.5, y: 1)
+        gradientLayer?.frame = bounds
+        
+        layer.insertSublayer(gradientLayer!, at: 0)
+        layer.cornerRadius = cornerRadius
+        layer.masksToBounds = true
     }
     
-    override func layoutSubviews() {
-        super.layoutSubviews()
-        gradientLayer?.frame = bounds
-               if let borderLayer = gradientLayer?.mask as? CAShapeLayer {
-                   borderLayer.path = UIBezierPath(roundedRect: bounds, cornerRadius: layer.cornerRadius).cgPath
-               }
+    func setupLayout(leftPadding: CGFloat?) {
+        tf.translatesAutoresizingMaskIntoConstraints = false
+        tf.backgroundColor = UIColor.clear
+        tf.borderStyle = .none
+        tf.textColor = .white
+        tf.keyboardType = .numberPad
+        tf.delegate = self
+        tf.font = UIFont.systemFont(ofSize: 16) // test
+        addSubview(tf)
+        
+        if let padding = leftPadding {
+            tf.leadingAnchor.constraint(equalTo: self.leadingAnchor, constant: padding).isActive = true
+        } else {
+            tf.textAlignment = .center
+            tf.leadingAnchor.constraint(equalTo: self.leadingAnchor).isActive = true
+        }
+        NSLayoutConstraint.activate([
+            tf.trailingAnchor.constraint(equalTo: self.trailingAnchor),
+            tf.topAnchor.constraint(equalTo: self.topAnchor),
+            tf.bottomAnchor.constraint(equalTo: self.bottomAnchor)
+        ])
+        
+    }
+    
+
+}
+
+// MARK: -- TF DELEGATE
+extension FDViewGradient: UITextFieldDelegate {
+    func textField(_ textField: UITextField, shouldChangeCharactersIn range: NSRange, replacementString string: String) -> Bool {
+            let currentText = textField.text ?? ""
+            guard let stringRange = Range(range, in: currentText) else { return false }
+            
+            let updatedText = currentText.replacingCharacters(in: stringRange, with: string)
+            
+            // Проверка, если символ удаляется
+            if string.isEmpty {
+                // Символ был удалён
+                handleSymbolRemoved()
+            } else {
+                // Символ был введён
+                handleSymbolEntered(updatedText)
+            }
+            
+            // Ограничение на ввод для кодов
+            if isCode {
+                return updatedText.count <= 1
+            } else {
+                return true
+            }
+        }
+
+        private func handleSymbolEntered(_ updatedText: String) {
+            // Ваша логика, когда символ был введён
+            // Например, обновление состояния модели
+            if let text = updatedText.last.map(String.init) {
+                textClosure?(text)
+            }
+            moveToNextTextField()
+        }
+
+        private func handleSymbolRemoved() {
+            // Ваша логика, когда символ был удалён
+            // Например, перемещение фокуса на предыдущее текстовое поле
+            moveToPreviousTextField()
+        }
+
+    
+    func textFieldDidChangeSelection(_ textField: UITextField) {
+        if let text = textField.text {
+            if text.count == 1 {
+                moveToNextTextField()
+            } else {
+                moveToPreviousTextField()
+            }
+        }
+    }
+    
+    
+    
+    private func moveToNextTextField() {
+        nextTextField?.becomeFirstResponder()
+    }
+    
+    private func moveToPreviousTextField() {
+        previousTextField?.becomeFirstResponder()
     }
 }

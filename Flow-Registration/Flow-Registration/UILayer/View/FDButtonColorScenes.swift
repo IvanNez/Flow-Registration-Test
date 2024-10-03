@@ -19,7 +19,7 @@ class FDButton: UIView {
         button.translatesAutoresizingMaskIntoConstraints = false
         button.titleLabel?.font = UIFont.systemFont(ofSize: 16)
         button.layer.cornerRadius = 24
-        button.clipsToBounds = true // Чтобы градиент и углы обрезались
+        button.clipsToBounds = true
         button.addTarget(self, action: #selector(buttonPressed), for: .touchUpInside)
         return button
     }()
@@ -64,7 +64,7 @@ class FDButton: UIView {
             button.topAnchor.constraint(equalTo: self.topAnchor)
         ])
         
-        // Применяем цветовую схему при инициализации
+       
         setColorScheme(scheme: scheme)
     }
     
@@ -73,10 +73,10 @@ class FDButton: UIView {
     }
     
     private func applyGradient() {
-        // Удаляем предыдущий градиент, если он был
+       
         gradientLayer?.removeFromSuperlayer()
         
-        // Создаем новый градиентный слой
+        
         let newGradientLayer = CAGradientLayer()
         newGradientLayer.frame = button.bounds
         newGradientLayer.colors = [
@@ -90,19 +90,15 @@ class FDButton: UIView {
         newGradientLayer.startPoint = CGPoint(x: 0.5, y: 0.0)
         newGradientLayer.endPoint = CGPoint(x: 0.5, y: 1.0)
         
-        // Добавляем новый градиент под текстом кнопки
         button.layer.insertSublayer(newGradientLayer, at: 0)
         
-        // Сохраняем ссылку на текущий градиентный слой
         gradientLayer = newGradientLayer
     }
     
     private func applyGray() {
-        // Удаляем предыдущий градиент, если он был
         gradientLayer?.removeFromSuperlayer()
         gradientLayer = nil
         
-        // Устанавливаем серый фон
         button.backgroundColor = .gray
     }
     

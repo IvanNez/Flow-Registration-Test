@@ -15,7 +15,7 @@ class NetworkManager {
         DispatchQueue.global().async {
             sleep(1)
             
-            let code = "11111"
+            let code = "111111"
             
             DispatchQueue.main.async {
                 completion(code)

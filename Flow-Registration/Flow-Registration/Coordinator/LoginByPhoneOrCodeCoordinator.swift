@@ -25,9 +25,9 @@ class LoginByPhoneOrCodeCoordinator: BaseCoordinator {
         }
         firstLoginViewModel.loginClossure = { [weak self] flag in
             if flag {
-                print("login with code")
+                self?.loginWithPhone(isRegistration: false)
             } else {
-                self?.loginWithPhone()
+                print("login with code")
             }
         }
         navigationController.pushViewController(loginByPhoneVC, animated: true)
@@ -51,7 +51,9 @@ class LoginByPhoneOrCodeCoordinator: BaseCoordinator {
         
     }
     
-    private func loginWithPhone() {
-        
+    private func loginWithPhone(isRegistration: Bool) {
+        let registerCoordinator = LoginOrRegistrationCoordinator(navigationController: navigationController, isRegister: isRegistration)
+        addChildCoordinator(registerCoordinator)
+        registerCoordinator.start()
     }
 }

@@ -93,6 +93,8 @@ private extension  LoginOrRegistrationView {
     func setup() {
         title = viewModel.loginOrRegistration ? "Войти" : "Зарегестрироваться"
         view.backgroundColor = .black
+        let backButton = UIBarButtonItem(title: "", style: .plain, target: nil, action: nil)
+        navigationItem.backBarButtonItem = backButton
         setupComponents()
         setupButtonAndActivityIndicator()
     }
@@ -138,7 +140,6 @@ private extension  LoginOrRegistrationView {
             self?.activityIndicator.isHidden = false
             self?.view.isUserInteractionEnabled = false
             self?.viewModel.getCodeButtonTapped(number: number)
-            
         }
     }
 }

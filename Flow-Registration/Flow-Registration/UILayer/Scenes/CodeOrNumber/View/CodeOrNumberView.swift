@@ -100,7 +100,10 @@ class CodeOrNumberView: UIViewController {
 private extension CodeOrNumberView {
     func setup() {
         view.backgroundColor = .black
+        let backButton = UIBarButtonItem(title: "", style: .plain, target: nil, action: nil)
+        navigationItem.backBarButtonItem = backButton
         navigationController?.navigationBar.tintColor = .white
+        navigationController?.navigationBar.titleTextAttributes = [NSAttributedString.Key.foregroundColor: UIColor.white]
         setupComponents()
         setupButton()
     }

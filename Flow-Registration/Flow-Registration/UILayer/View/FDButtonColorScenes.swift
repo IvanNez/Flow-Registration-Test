@@ -72,6 +72,10 @@ class FDButton: UIView {
         button.setTitle(title, for: .normal)
     }
     
+    func setEnable(_ enable: Bool) {
+        button.isEnabled = enable
+    }
+    
     private func applyGradient() {
        
         gradientLayer?.removeFromSuperlayer()

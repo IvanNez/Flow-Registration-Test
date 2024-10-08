@@ -10,6 +10,7 @@ import UIKit
 class AppCoordinator: BaseCoordinator {
     private var hasCode: Bool
     
+    
     init(navigationController: UINavigationController, hasCode: Bool) {
         self.hasCode = hasCode
         super.init(navigationController: navigationController)

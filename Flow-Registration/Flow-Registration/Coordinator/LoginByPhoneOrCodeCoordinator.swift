@@ -25,23 +25,18 @@ class LoginByPhoneOrCodeCoordinator: BaseCoordinator {
         }
         firstLoginViewModel.loginClossure = { [weak self] flag in
             if flag {
-                self?.loginWithPhone(isRegistration: false)
+                self?.showEnterCodeScreen()
             } else {
-                print("login with code")
+                self?.loginWithPhone(isRegistration: false)
             }
         }
         navigationController.pushViewController(loginByPhoneVC, animated: true)
     }
     
-    private func showEnterCodeScreen(isForLogin: Bool, code: String) {
-        let viewModel = EnterCodeViewModel(loginOrRegistrationClosure: isForLogin, code: code)
-        let enterCodeVC = EnterCodeView(viewModel: viewModel)
-        //        enterCodeVC.onSubmitCode = {
-        //            let alert = UIAlertController(title: "Готово", message: nil, preferredStyle: .alert)
-        //            alert.addAction(UIAlertAction(title: "OK", style: .default, handler: nil))
-        //            self.navigationController.present(alert, animated: true)
-        //        }
-        navigationController.pushViewController(enterCodeVC, animated: true)
+    private func showEnterCodeScreen() {
+        let registerCodeCoordinator = RegisterCodeCoordinator(navigationController: navigationController)
+        addChildCoordinator(registerCodeCoordinator)
+        registerCodeCoordinator.start()
     }
     
     private func showRegisterScreen(isRegistration: Bool) {

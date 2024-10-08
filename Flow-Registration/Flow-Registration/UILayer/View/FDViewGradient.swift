@@ -40,16 +40,13 @@ class FDViewGradient: UIView {
     override func layoutSubviews() {
         super.layoutSubviews()
         gradientLayer?.frame = bounds
-        if let borderLayer = gradientLayer?.mask as? CAShapeLayer {
-            borderLayer.path = UIBezierPath(roundedRect: bounds, cornerRadius: layer.cornerRadius).cgPath
-        }
+        
     }
 }
 
 // MARK: -- Setup layer
 private extension FDViewGradient {
     func setupGradientBorder(cornerRadius: CGFloat) {
-        
         gradientLayer = CAGradientLayer()
         gradientLayer?.colors = [
             UIColor(hexString: "#9358F7")!.cgColor,
@@ -61,7 +58,7 @@ private extension FDViewGradient {
         gradientLayer?.startPoint = CGPoint(x: 0.5, y: 0)
         gradientLayer?.endPoint = CGPoint(x: 0.5, y: 1)
         gradientLayer?.frame = bounds
-        
+
         layer.insertSublayer(gradientLayer!, at: 0)
         layer.cornerRadius = cornerRadius
         layer.masksToBounds = true
@@ -74,7 +71,7 @@ private extension FDViewGradient {
         tf.textColor = .white
         tf.keyboardType = .numberPad
         tf.delegate = self
-        tf.font = UIFont.systemFont(ofSize: 16) // test
+        tf.font = UIFont.systemFont(ofSize: 16)
         addSubview(tf)
         
         if let padding = leftPadding {
@@ -91,49 +88,49 @@ private extension FDViewGradient {
         
     }
     
-
+    
 }
 
 // MARK: -- TF DELEGATE
 extension FDViewGradient: UITextFieldDelegate {
     func textField(_ textField: UITextField, shouldChangeCharactersIn range: NSRange, replacementString string: String) -> Bool {
-            let currentText = textField.text ?? ""
-            guard let stringRange = Range(range, in: currentText) else { return false }
+        let currentText = textField.text ?? ""
+        guard let stringRange = Range(range, in: currentText) else { return false }
+        
+        let updatedText = currentText.replacingCharacters(in: stringRange, with: string)
+        
+        if string.isEmpty {
             
-            let updatedText = currentText.replacingCharacters(in: stringRange, with: string)
-            
-            // Проверка, если символ удаляется
-            if string.isEmpty {
-                // Символ был удалён
-                handleSymbolRemoved()
-            } else {
-                // Символ был введён
-                handleSymbolEntered(updatedText)
-            }
-            
-            // Ограничение на ввод для кодов
-            if isCode {
-                return updatedText.count <= 1
-            } else {
-                return true
-            }
+            textClosure?(string)
+            handleSymbolRemoved()
+        } else {
+            handleSymbolEntered(updatedText)
         }
-
-        private func handleSymbolEntered(_ updatedText: String) {
-            // Ваша логика, когда символ был введён
-            // Например, обновление состояния модели
-            if let text = updatedText.last.map(String.init) {
-                textClosure?(text)
-            }
-            moveToNextTextField()
+        
+        if isCode {
+            return updatedText.count <= 1
+        } else {
+            return true
         }
-
-        private func handleSymbolRemoved() {
-            // Ваша логика, когда символ был удалён
-            // Например, перемещение фокуса на предыдущее текстовое поле
-            moveToPreviousTextField()
+    }
+    
+    private func handleSymbolEntered(_ updatedText: String) {
+        if let text = updatedText.last.map(String.init) {
+            textClosure?(text)
         }
-
+        
+        DispatchQueue.main.async { [weak self] in
+            self?.moveToNextTextField()
+        }
+    }
+    
+    private func handleSymbolRemoved() {
+        
+        DispatchQueue.main.async { [weak self] in
+            self?.moveToPreviousTextField()
+        }
+    }
+    
     
     func textFieldDidChangeSelection(_ textField: UITextField) {
         if let text = textField.text {

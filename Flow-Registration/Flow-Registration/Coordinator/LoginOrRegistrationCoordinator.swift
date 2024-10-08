@@ -9,6 +9,7 @@ import UIKit
 class LoginOrRegistrationCoordinator: BaseCoordinator {
     
     var isRegister: Bool
+   
     
     init(navigationController: UINavigationController, isRegister: Bool) {
         self.isRegister = isRegister
@@ -21,12 +22,17 @@ class LoginOrRegistrationCoordinator: BaseCoordinator {
         viewModel.getCode = { [weak self] code in
             self?.setCodeScreen(code)
         }
+       
         navigationController.pushViewController(view, animated: true)
     }
     
     private func setCodeScreen(_ code: String) {
         let viewModel = EnterCodeViewModel(loginOrRegistrationClosure: isRegister, code: code)
         let view = EnterCodeView(viewModel: viewModel)
+        viewModel.dissmis = { [weak self] in
+            self?.navigationController.popToRootViewController(animated: true)
+        }
+       
         navigationController.pushViewController(view, animated: true)
     }
 }

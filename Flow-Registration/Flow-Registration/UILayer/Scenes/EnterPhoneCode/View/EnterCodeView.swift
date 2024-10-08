@@ -6,11 +6,13 @@
 //
 
 import UIKit
+import Combine
 
 class EnterCodeView: UIViewController {
     
     // Properties
     private let viewModel: EnterCodeViewModel
+    private var cancellables: Set<AnyCancellable> = []
     
     // UI
     private lazy var mainStack: UIStackView = {
@@ -82,6 +84,7 @@ class EnterCodeView: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         setup()
+        bindViewModel()
     }
 }
 
@@ -139,7 +142,34 @@ private extension EnterCodeView {
     
     func setupButton() {
         buttonTap.setTitle(viewModel.loginOrRegistration ? "Зарегестрироваться" : "Войти")
-        buttonTap.action = { /*[weak self] in*/
+        buttonTap.action = { [weak self] in
+            let alert = Alerts.shared.alert(title: "Добро пожаловать", message: "Вы успешно \(self!.viewModel.loginOrRegistration ? "зарегестрировались" : "вошли")")
+            alert.addAction(UIAlertAction(title: "Закрыть", style: .cancel, handler: { [weak self] _ in
+                self?.viewModel.checkCode()
+            }))
+            self?.present(alert, animated: true)
+        }
+        buttonTap.setEnable(false)
+    }
+}
+
+// MARK: -- Binding
+private extension EnterCodeView {
+    private func bindViewModel() {
+        viewModel.$inputCode
+            .sink { [weak self] code in
+                self?.updateButtonState(code: code)
+            }
+            .store(in: &cancellables)
+    }
+    
+    private func updateButtonState(code: String) {
+        if code.count == 6 {
+            buttonTap.scheme = .gradient
+            buttonTap.setEnable(true)
+        } else {
+            buttonTap.scheme = .gray
+            buttonTap.setEnable(false)
         }
     }
 }

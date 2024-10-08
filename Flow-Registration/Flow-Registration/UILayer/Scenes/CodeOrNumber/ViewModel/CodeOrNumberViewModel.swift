@@ -18,7 +18,7 @@ class CodeOrNumberViewModel {
     }
     
     func loginButtonTapped() {
-        loginClossure?(true)
+        loginClossure?(loadCodeOrPhone)
     }
     
     func registrationButtonTapped() {

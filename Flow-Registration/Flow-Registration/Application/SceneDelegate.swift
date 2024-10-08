@@ -15,19 +15,14 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
     func scene(_ scene: UIScene, willConnectTo session: UISceneSession, options connectionOptions: UIScene.ConnectionOptions) {
         guard let windowScene = (scene as? UIWindowScene) else { return }
         
-        // Создаем окно приложения
         window = UIWindow(windowScene: windowScene)
         
-        // Создаем UINavigationController
-        let navigationController = UINavigationController()
+        let navigationController = UINavigationController.init()
         
-        // Инициализируем главный координатор
-        appCoordinator = AppCoordinator(navigationController: navigationController, hasCode: false)
+        appCoordinator = AppCoordinator(navigationController: navigationController, hasCode: true)
         
-        // Запускаем координатор
         appCoordinator?.start()
         
-        // Устанавливаем корневым контроллером navigationController
         window?.rootViewController = navigationController
         window?.makeKeyAndVisible()
     }

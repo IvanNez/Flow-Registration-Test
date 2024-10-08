@@ -22,12 +22,11 @@ class BaseCoordinator: Coordinator {
         self.navigationController = navigationController
     }
     
-    func start() {}
+    func start() { }
   
     func childDidFinish(_ child: Coordinator?) {
         guard let child = child else { return }
         if let index = childCoordinators.firstIndex(where: { $0 === child }) {
-            print("delete child")
             childCoordinators.remove(at: index)
         }
     }
